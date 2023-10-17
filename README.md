@@ -11,3 +11,5 @@ Resize is a console program to resize a folder structure of images. It will take
 Remove hard coded folder settings and replace with *baseDirectory = Environment.CurrentDirectory;*.
 
 Remove hard coded image sizes and replace with variables.
+
+Write code to create the new resize folder structure.
