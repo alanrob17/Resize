@@ -5,7 +5,7 @@ namespace Resize
     internal class Program
     {
         // NuGet - System.Drawing.Common
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             string imagePath = @"E:\Alan-Phone";
 

@@ -28,8 +28,6 @@ namespace Resize.Data
         {
             var newWidth = 0;
 
-            bool isPortrait = false;
-
             using (var inputImage = Image.FromFile(inputImagePath))
             {
                 // Read the EXIF orientation tag
@@ -49,19 +47,38 @@ namespace Resize.Data
                     }
                     // Handle other orientation values as needed
                 }
-
-                int newHeight = (int)Math.Round(inputImage.Height * (newWidth / (double)inputImage.Width));
-                var newImage = new Bitmap(newWidth, newHeight);
-
-                using (var graphics = Graphics.FromImage(newImage))
+                else
                 {
-                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graphics.DrawImage(inputImage, new Rectangle(0, 0, newWidth, newHeight));
+                    // Default width if EXIF orientation tag is not present
+                    newWidth = 800;
                 }
 
-                newImage.Save(outputImagePath, ImageFormat.Jpeg); // You can choose the desired image format.
+                if (newWidth > 0)
+                {
+                    int newHeight = (int)Math.Round(inputImage.Height * (newWidth / (double)inputImage.Width));
+                    if (newHeight > 0)
+                    {
+                        var newImage = new Bitmap(newWidth, newHeight);
+
+                        using (var graphics = Graphics.FromImage(newImage))
+                        {
+                            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                            graphics.DrawImage(inputImage, new Rectangle(0, 0, newWidth, newHeight));
+                        }
+
+                        newImage.Save(outputImagePath, ImageFormat.Jpeg); // You can choose the desired image format.
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Calculated new height is not valid.");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Calculated new width is not valid.");
+                }
             }
         }
 
