@@ -13,7 +13,14 @@ namespace Resize.Data
     {
         internal static async Task ResizeImageAsync(string imagePath, string image)
         {
-            var newImage = @"E:\Resize" + image.Replace(@"E:\Alan-Phone", string.Empty);
+            image = image.Replace(imagePath, string.Empty).TrimStart('\\');
+            string resizePath = Path.Combine(Directory.GetCurrentDirectory(), "resized");
+            var newImage = resizePath + @"\" + image;
+            
+            if (!Directory.Exists(Path.GetDirectoryName(newImage)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(newImage));
+            }
 
             await ResizeImageByWidthAsync(image, newImage);
         }
