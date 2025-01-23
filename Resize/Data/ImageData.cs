@@ -14,8 +14,10 @@ namespace Resize.Data
         internal static async Task ResizeImageAsync(string imagePath, string image)
         {
             image = image.Replace(imagePath, string.Empty).TrimStart('\\');
+            var tempImage = Path.GetFileNameWithoutExtension(image);
+            tempImage = tempImage + "_r.jpg";
             string resizePath = Path.Combine(Directory.GetCurrentDirectory(), "resized");
-            var newImage = resizePath + @"\" + image;
+            var newImage = resizePath + @"\" + tempImage;
             
             if (!Directory.Exists(Path.GetDirectoryName(newImage)))
             {
@@ -27,32 +29,10 @@ namespace Resize.Data
 
         public static async Task ResizeImageByWidthAsync(string inputImagePath, string outputImagePath)
         {
-            var newWidth = 0;
-
             using (var inputImage = Image.FromFile(inputImagePath))
             {
-                // Read the EXIF orientation tag
-                int exifOrientationTag = 274; // EXIF orientation tag
-                if (inputImage.PropertyIdList.Contains(exifOrientationTag))
-                {
-                    var orientation = (int)inputImage.GetPropertyItem(exifOrientationTag).Value[0];
-                    if (orientation == 6)
-                    {
-                        // Rotate 90 degrees clockwise for EXIF orientation 6
-                        inputImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        newWidth = 500;
-                    }
-                    else
-                    {
-                        newWidth = 800;
-                    }
-                    // Handle other orientation values as needed
-                }
-                else
-                {
-                    // Default width if EXIF orientation tag is not present
-                    newWidth = 800;
-                }
+                // Calculate new width as 80% of the original width
+                var newWidth = (int)(inputImage.Width * 0.8);
 
                 if (newWidth > 0)
                 {
@@ -67,6 +47,12 @@ namespace Resize.Data
                             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                             graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                             graphics.DrawImage(inputImage, new Rectangle(0, 0, newWidth, newHeight));
+                        }
+
+                        // Copy EXIF tags from the original image to the new image
+                        foreach (var propertyItem in inputImage.PropertyItems)
+                        {
+                            newImage.SetPropertyItem(propertyItem);
                         }
 
                         await Task.Run(() => newImage.Save(outputImagePath, ImageFormat.Jpeg)); // You can choose the desired image format.

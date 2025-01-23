@@ -1,13 +1,9 @@
 # Resize
 
-Resize is a console program to resize a folder structure of images. It will take a root folder and recurse through all sub-folders creating a list of original sized images. The program will then resize a copy of each image into a new folder structure.
+Resize is a console program to resize a folder of images. It will take a root folder and recurse through all sub-folders creating a list of original sized images. The program will then resize a copy of each image into the **resized** folder structure.
 
-This makes the images around 800 pixels width or height. It can drastically reduce the size of images.
+This makes the images 80% of their original width. It reduces the total size of images by about 50%.
 
 ## NuGet packages
 
 * System.Drawing.Common
-
-## To-Do
-
-Reduce the height or width to about 80% 0f original size.
