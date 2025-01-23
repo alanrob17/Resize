@@ -1,22 +1,27 @@
 ﻿using Resize.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Resize
 {
     internal class Program
     {
         // NuGet - System.Drawing.Common
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             string imagePath = @"E:\Alan-Phone";
 
             List<string> imageList = new();
 
-            ImageData.GetImageList(imageList, imagePath);
+            await ImageData.GetImageListAsync(imageList, imagePath);
 
             foreach (var image in imageList)
             {
-               ImageData.ResizeImage(imagePath, image);
+                await ImageData.ResizeImageAsync(imagePath, image);
+                Console.Write(".");
             }
+
+            Console.WriteLine("\nFinished.");
         }
     }
 }
